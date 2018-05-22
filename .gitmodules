@@ -4,3 +4,6 @@
 [submodule "LugosiOnJavacc"]
 	path = LugosiOnJavacc
 	url = git@github.com:lucasbretana/LugosiOnJavacc.git
+[submodule "StackMachine"]
+	path = StackMachine
+	url = git@github.com:Jonathas-Conceicao/StackMachine.git
