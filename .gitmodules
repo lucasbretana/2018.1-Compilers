@@ -1,0 +1,3 @@
+[submodule "SimpleCompiler"]
+	path = SimpleCompiler
+	url = git@github.com:lucasbretana/SimpleCompiler.git
