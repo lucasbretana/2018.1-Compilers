@@ -113,4 +113,94 @@ Example: entry: z
   ...
   Z     -> z
 ```
-  - the parser will run throw all the 26 possible entry before finding the right rule  
+    + the parser will run throw all the 26 possible entry before finding the right rule  
+    + note that this **doesn't procude a wrong parser**, it only may be slow  
+    + a possible solution is to use the predictive parser  
+      * this kinda of parser knows what each alternative recognize, to avoid expand unecessary rules  
+
+  - another problem is that for some construction of LLC grammar it will produce an incorrect parser  
+Example:
+```
+  EXP       -> ID | ELEM_IND
+  ELEM_IND  -> ID[EXP]
+```
+The code:
+```
+  bool EXP()
+    return token(ID) || ELEM_IND()
+  bool ELEM_IND()
+    return token(ID) && token('[' && EXP() && token(']')
+```
+    + the problem is the ambiguit on recognize ELEM\_IND 
+
+Example:
+```
+  a[b]
+```
+    + Would be recognized in the first rule, leaving the "[B" behind, rejecting the valid construction  
+    + the solution is:
+      * apply a substituion (change the non-terminal by its alternatives) in the call of ELEM\_IND, leaving: 
+```
+  EXP -> ID | ID[EXP]
+```
+      * now, the grammar needs to be factored  
+
+| A -> bD | bC  |
+|-------------- |
+| A -> bA'      |
+| A' -> D | C   |
+
+Table 2.: grammar factorization  
+```
+  EXP   -> ID EXP' 
+  EXP'  -> [EXP] | <empty>  
+```
+
+Example:  
+```
+  S -> Aab  
+  A -> a | <empty>  
+```
+
+Substitution:  
+  S -> **a**ab | **a**b  
+
+Factorization:  
+```
+  S   -> aS'  
+  S'  -> ab | b  
+```
+
+  - another thing that causes a incorret parser is:  
+    + left recursion  
+Example: 
+```
+  EXP -> EXP + TERM | TERM  
+```
+Code:  
+```
+  bool EXP()  
+    return EXP() && token('+') && TERM() || TERM()  
+
+    + solve by refactoring the grammar  
+
+| A -> Ab | c         |
+|-------------------- |
+| A -> cA'            |
+| A' -> bA' | <empty> |
+Table 3.: grammar fecatorization  
+
+```
+  EXP   -> TERM EXP'
+  EXP'  -> + TERM EXP ' | <empty>
+
+```
+
+Examples: 
+1)
+```
+  S     -> TYPE LIST; | S TYPE  LIST;
+  TYPE  -> bool | int
+  LIST  -> ID | LIST, ID
+```
+
