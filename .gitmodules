@@ -1,3 +1,6 @@
 [submodule "SimpleCompiler"]
 	path = SimpleCompiler
 	url = git@github.com:lucasbretana/SimpleCompiler.git
+[submodule "LugosiOnJavacc"]
+	path = LugosiOnJavacc
+	url = git@github.com:lucasbretana/LugosiOnJavacc.git
